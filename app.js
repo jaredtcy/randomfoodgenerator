@@ -51,6 +51,9 @@ async function loadFoods() {
         // Create a remove button
         const removeButton = document.createElement('button');
         removeButton.textContent = 'Remove';
+        removeButton.style.marginLeft = '10px';
+        // Apply the small-button CSS class
+        removeButton.classList.add('small-button');
         removeButton.addEventListener('click', () => removeFood(doc.id));
 
         li.appendChild(removeButton);
