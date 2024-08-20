@@ -2,7 +2,7 @@
 
 // Import the required Firebase modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
 
 // Your Firebase configuration
 const firebaseConfig = {
@@ -47,8 +47,25 @@ async function loadFoods() {
     querySnapshot.forEach((doc) => {
         const li = document.createElement('li');
         li.textContent = doc.data().name;
+
+        // Create a remove button
+        const removeButton = document.createElement('button');
+        removeButton.textContent = 'Remove';
+        removeButton.addEventListener('click', () => removeFood(doc.id));
+
+        li.appendChild(removeButton);
         foodList.appendChild(li);
     });
+}
+
+// Remove food item from Firestore
+async function removeFood(id) {
+    try {
+        await deleteDoc(doc(db, 'foods', id));
+        loadFoods();  // Refresh the list of foods
+    } catch (error) {
+        console.error("Error removing food: ", error);
+    }
 }
 
 // Generate a random food item from the list
