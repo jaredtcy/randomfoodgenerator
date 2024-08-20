@@ -42,3 +42,15 @@ button:hover {
     font-size: 1.5em;
     font-weight: bold;
 }
+
+#foodList {
+    list-style-type: none;
+    padding: 0;
+}
+
+#foodList li {
+    background: #f4f4f4;
+    margin: 5px 0;
+    padding: 10px;
+    border-radius: 4px;
+}
