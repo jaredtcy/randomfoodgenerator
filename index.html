@@ -6,78 +6,18 @@
     <title>Food List App</title>
     <link rel="stylesheet" href="styles.css">
     <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js"></script>
-    <!-- Your JavaScript -->
-    <script defer src="app.js"></script>
+    <script type="module" src="app.js"></script>
 </head>
 <body>
     <h1>Food List App</h1>
     <input type="text" id="foodInput" placeholder="Enter food item">
-    <button onclick="addFood()">Add Food</button>
-    <button onclick="generateRandomFood()">Generate Random Food</button>
+    <button id="addFoodButton">Add Food</button>
+    <button id="generateRandomFoodButton">Generate Random Food</button>
     
     <h2>Food Items</h2>
     <ul id="foodList"></ul>
     
     <h2>Random Food</h2>
     <p id="randomFood"></p>
-
-    <script>
-        // Your Firebase configuration
-        const firebaseConfig = {
-          apiKey: "AIzaSyBP74yHtSWFEnlskxUTfczXbYo20zw4ucU",
-          authDomain: "fooditem-5b8ae.firebaseapp.com",
-          projectId: "fooditem-5b8ae",
-          storageBucket: "fooditem-5b8ae.appspot.com",
-          messagingSenderId: "134587137502",
-          appId: "1:134587137502:web:682f088e661ade80c7314f",
-          measurementId: "G-WSGRMPPVTW"
-        };
-
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
-        // Add food item to the Firestore database
-        async function addFood() {
-            const foodItem = document.getElementById('foodInput').value.trim();
-            if (foodItem) {
-                await db.collection('foods').add({
-                    name: foodItem,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                document.getElementById('foodInput').value = '';
-                loadFoods();
-            }
-        }
-
-        // Load food items from Firestore and display them
-        async function loadFoods() {
-            const foodList = document.getElementById('foodList');
-            foodList.innerHTML = '';
-            const snapshot = await db.collection('foods').orderBy('timestamp').get();
-            snapshot.forEach(doc => {
-                const li = document.createElement('li');
-                li.textContent = doc.data().name;
-                foodList.appendChild(li);
-            });
-        }
-
-        // Generate a random food item from the list
-        async function generateRandomFood() {
-            const snapshot = await db.collection('foods').get();
-            const foods = snapshot.docs.map(doc => doc.data().name);
-            if (foods.length > 0) {
-                const randomFood = foods[Math.floor(Math.random() * foods.length)];
-                document.getElementById('randomFood').textContent = randomFood;
-            } else {
-                document.getElementById('randomFood').textContent = 'No food items available.';
-            }
-        }
-
-        // Initial load
-        loadFoods();
-    </script>
 </body>
 </html>
