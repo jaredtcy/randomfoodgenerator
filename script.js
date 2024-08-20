@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Load the stored food list when the page loads
+    // Load and display the stored food list when the page loads
     loadFoodList();
 });
 
@@ -13,7 +13,11 @@ document.getElementById('saveButton').addEventListener('click', function() {
     if (foodOptions.length > 0) {
         // Store the food options in localStorage
         localStorage.setItem('foodList', JSON.stringify(foodOptions));
-        document.getElementById('result').textContent = 'Food list saved successfully!';
+        
+        // Update the displayed food list
+        displayFoodList(foodOptions);
+        
+        document.getElementById('result').textContent = 'Food list saved and updated!';
     } else {
         document.getElementById('result').textContent = 'Please enter some food options.';
     }
@@ -51,8 +55,20 @@ function loadFoodList() {
         const foodOptions = JSON.parse(storedFoodList);
         
         if (foodOptions.length > 0) {
-            // Optionally, you could display the list or use it as needed
-            document.getElementById('result').textContent = 'Food list loaded successfully!';
+            // Display the list
+            displayFoodList(foodOptions);
         }
     }
+}
+
+function displayFoodList(foodOptions) {
+    const foodListContainer = document.getElementById('foodList');
+    foodListContainer.innerHTML = ''; // Clear the existing list
+    
+    // Populate the list
+    foodOptions.forEach(food => {
+        const listItem = document.createElement('li');
+        listItem.textContent = food;
+        foodListContainer.appendChild(listItem);
+    });
 }
