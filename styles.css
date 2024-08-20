@@ -50,3 +50,9 @@ li {
 #randomFood {
     font-weight: bold;
 }
+
+.small-button {
+    font-size: 12px; /* Smaller text */
+    padding: 5px 10px; /* Smaller padding */
+    border: 1px solid #ccc; /* Optional: border to match existing styles */
+}
