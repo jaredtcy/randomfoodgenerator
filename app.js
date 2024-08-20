@@ -6,12 +6,12 @@ import { getFirestore, collection, addDoc, getDocs, serverTimestamp } from "http
 
 // Your Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyBP74yHtSWFEnlskxUTfczXbYo20zw4ucU",
-    authDomain: "fooditem-5b8ae.firebaseapp.com",
-    projectId: "fooditem-5b8ae",
-    storageBucket: "fooditem-5b8ae.appspot.com",
-    messagingSenderId: "134587137502",
-    appId: "1:134587137502:web:682f088e661ade80c7314f"
+    apiKey: "AIzaSyAUb1GlHsZMvwchOrmlPghDVO2gGsZf0u8",
+    authDomain: "fooditem-69b01.firebaseapp.com",
+    projectId: "fooditem-69b01",
+    storageBucket: "fooditem-69b01.appspot.com",
+    messagingSenderId: "358842978212",
+    appId: "1:358842978212:web:beda2fd08081feeb26bb31"
 };
 
 // Initialize Firebase
