@@ -25,11 +25,11 @@ document.getElementById('categoryFilter').addEventListener('change', loadFoods);
 async function addFood() {
     const foodItem = document.getElementById('foodInput').value.trim();
     const category = document.getElementById('categoryDropdown').value;
-    if (foodItem && category) {
+    if (foodItem) {
         try {
             await addDoc(collection(db, 'foods'), {
                 name: foodItem,
-                category: category,
+                category: category || 'Others', // Default to 'Others' if no category is selected
                 timestamp: serverTimestamp()
             });
             document.getElementById('foodInput').value = '';
@@ -107,29 +107,17 @@ async function populateCategoryDropdowns() {
     categoryDropdown.innerHTML = '<option value="">Select Category</option>';
     categoryFilter.innerHTML = '<option value="">All</option>';
     
-    const querySnapshot = await getDocs(collection(db, 'foods'));
-    const categories = new Set();
-    
-    querySnapshot.forEach((doc) => {
-        categories.add(doc.data().category);
-    });
-    
-    // Add the new categories to the dropdowns
+    // Define predefined categories
     const predefinedCategories = [
         "Dessert",
         "Japanese Cuisine",
         "Western Cuisine",
         "Asian Cuisine",
-        "Korean Cuisine"
+        "Korean Cuisine",
+        "Others"
     ];
     
     predefinedCategories.forEach(category => {
-        if (!categories.has(category)) {
-            categories.add(category);
-        }
-    });
-    
-    categories.forEach(category => {
         const option = document.createElement('option');
         option.value = category;
         option.textContent = category;
