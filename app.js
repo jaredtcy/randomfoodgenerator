@@ -1,8 +1,6 @@
-// app.js
-
 // Import the required Firebase modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, serverTimestamp, query, where } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
 
 // Your Firebase configuration
 const firebaseConfig = {
@@ -21,17 +19,21 @@ const db = getFirestore(app);
 // Add event listeners for buttons
 document.getElementById('addFoodButton').addEventListener('click', addFood);
 document.getElementById('generateRandomFoodButton').addEventListener('click', generateRandomFood);
+document.getElementById('categoryFilter').addEventListener('change', loadFoods);
 
 // Add food item to the Firestore database
 async function addFood() {
     const foodItem = document.getElementById('foodInput').value.trim();
-    if (foodItem) {
+    const category = document.getElementById('categoryInput').value.trim();
+    if (foodItem && category) {
         try {
             await addDoc(collection(db, 'foods'), {
                 name: foodItem,
+                category: category,
                 timestamp: serverTimestamp()
             });
             document.getElementById('foodInput').value = '';
+            document.getElementById('categoryInput').value = '';
             loadFoods();  // Refresh the list of foods
         } catch (error) {
             console.error("Error adding food: ", error);
@@ -43,16 +45,23 @@ async function addFood() {
 async function loadFoods() {
     const foodList = document.getElementById('foodList');
     foodList.innerHTML = '';
-    const querySnapshot = await getDocs(collection(db, 'foods'));
+    
+    const selectedCategory = document.getElementById('categoryFilter').value;
+    let q = collection(db, 'foods');
+    
+    if (selectedCategory) {
+        q = query(collection(db, 'foods'), where("category", "==", selectedCategory));
+    }
+    
+    const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
         const li = document.createElement('li');
-        li.textContent = doc.data().name;
-
+        li.textContent = `${doc.data().name} - ${doc.data().category}`;
+        
         // Create a remove button
         const removeButton = document.createElement('button');
         removeButton.textContent = 'Remove';
         removeButton.style.marginLeft = '10px';
-        // Apply the small-button CSS class
         removeButton.classList.add('small-button');
         removeButton.addEventListener('click', () => removeFood(doc.id));
 
@@ -73,7 +82,14 @@ async function removeFood(id) {
 
 // Generate a random food item from the list
 async function generateRandomFood() {
-    const querySnapshot = await getDocs(collection(db, 'foods'));
+    const selectedCategory = document.getElementById('categoryFilter').value;
+    let q = collection(db, 'foods');
+    
+    if (selectedCategory) {
+        q = query(collection(db, 'foods'), where("category", "==", selectedCategory));
+    }
+    
+    const querySnapshot = await getDocs(q);
     const foods = querySnapshot.docs.map(doc => doc.data().name);
     if (foods.length > 0) {
         const randomFood = foods[Math.floor(Math.random() * foods.length)];
