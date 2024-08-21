@@ -102,6 +102,9 @@ async function generateRandomFood() {
 async function populateCategoryDropdowns() {
     const categoryDropdown = document.getElementById('categoryDropdown');
     const categoryFilter = document.getElementById('categoryFilter');
+
+    // Clear existing options
+    categoryDropdown.innerHTML = '<option value="">Select Category</option>';
     categoryFilter.innerHTML = '<option value="">All</option>';
     
     const querySnapshot = await getDocs(collection(db, 'foods'));
