@@ -114,6 +114,21 @@ async function populateCategoryDropdowns() {
         categories.add(doc.data().category);
     });
     
+    // Add the new categories to the dropdowns
+    const predefinedCategories = [
+        "Dessert",
+        "Japanese Cuisine",
+        "Western Cuisine",
+        "Asian Cuisine",
+        "Korean Cuisine"
+    ];
+    
+    predefinedCategories.forEach(category => {
+        if (!categories.has(category)) {
+            categories.add(category);
+        }
+    });
+    
     categories.forEach(category => {
         const option = document.createElement('option');
         option.value = category;
