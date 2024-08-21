@@ -24,7 +24,7 @@ document.getElementById('categoryFilter').addEventListener('change', loadFoods);
 // Add food item to the Firestore database
 async function addFood() {
     const foodItem = document.getElementById('foodInput').value.trim();
-    const category = document.getElementById('categoryInput').value.trim();
+    const category = document.getElementById('categoryDropdown').value;
     if (foodItem && category) {
         try {
             await addDoc(collection(db, 'foods'), {
@@ -33,7 +33,6 @@ async function addFood() {
                 timestamp: serverTimestamp()
             });
             document.getElementById('foodInput').value = '';
-            document.getElementById('categoryInput').value = '';
             loadFoods();  // Refresh the list of foods
         } catch (error) {
             console.error("Error adding food: ", error);
@@ -99,5 +98,32 @@ async function generateRandomFood() {
     }
 }
 
+// Populate category dropdowns initially and whenever categories are updated
+async function populateCategoryDropdowns() {
+    const categoryDropdown = document.getElementById('categoryDropdown');
+    const categoryFilter = document.getElementById('categoryFilter');
+    categoryFilter.innerHTML = '<option value="">All</option>';
+    
+    const querySnapshot = await getDocs(collection(db, 'foods'));
+    const categories = new Set();
+    
+    querySnapshot.forEach((doc) => {
+        categories.add(doc.data().category);
+    });
+    
+    categories.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category;
+        option.textContent = category;
+        categoryDropdown.appendChild(option);
+        
+        const filterOption = document.createElement('option');
+        filterOption.value = category;
+        filterOption.textContent = category;
+        categoryFilter.appendChild(filterOption);
+    });
+}
+
 // Initial load
+populateCategoryDropdowns();
 loadFoods();
