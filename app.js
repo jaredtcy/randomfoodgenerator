@@ -20,11 +20,12 @@ const db = getFirestore(app);
 document.getElementById('addFoodButton').addEventListener('click', addFood);
 document.getElementById('generateRandomFoodButton').addEventListener('click', generateRandomFood);
 document.getElementById('categoryFilter').addEventListener('change', loadFoods);
+document.getElementById('addCategoryButton').addEventListener('click', addCategory);
 
 // Add food item to the Firestore database
 async function addFood() {
     const foodItem = document.getElementById('foodInput').value.trim();
-    const category = document.getElementById('categoryInput').value.trim();
+    const category = document.getElementById('categoryDropdown').value;
     if (foodItem && category) {
         try {
             await addDoc(collection(db, 'foods'), {
@@ -33,7 +34,6 @@ async function addFood() {
                 timestamp: serverTimestamp()
             });
             document.getElementById('foodInput').value = '';
-            document.getElementById('categoryInput').value = '';
             loadFoods();  // Refresh the list of foods
         } catch (error) {
             console.error("Error adding food: ", error);
@@ -99,5 +99,59 @@ async function generateRandomFood() {
     }
 }
 
+// Add a new category to the dropdown lists
+async function addCategory() {
+    const newCategory = document.getElementById('newCategoryInput').value.trim();
+    if (newCategory) {
+        const categoryDropdown = document.getElementById('categoryDropdown');
+        const categoryFilter = document.getElementById('categoryFilter');
+
+        // Add the new category to both dropdowns if it doesn’t already exist
+        if (![...categoryDropdown.options].some(option => option.value === newCategory)) {
+            const newOption = document.createElement('option');
+            newOption.value = newCategory;
+            newOption.textContent = newCategory;
+            categoryDropdown.appendChild(newOption);
+        }
+        
+        if (![...categoryFilter.options].some(option => option.value === newCategory)) {
+            const newFilterOption = document.createElement('option');
+            newFilterOption.value = newCategory;
+            newFilterOption.textContent = newCategory;
+            categoryFilter.appendChild(newFilterOption);
+        }
+
+        document.getElementById('newCategoryInput').value = '';
+    }
+}
+
+// Populate category dropdowns initially and whenever categories are updated
+async function populateCategoryDropdowns() {
+    const categoryDropdown = document.getElementById('categoryDropdown');
+    const categoryFilter = document.getElementById('categoryFilter');
+    categoryDropdown.innerHTML = '';
+    categoryFilter.innerHTML = '<option value="">All</option>';
+    
+    const querySnapshot = await getDocs(collection(db, 'foods'));
+    const categories = new Set();
+    
+    querySnapshot.forEach((doc) => {
+        categories.add(doc.data().category);
+    });
+    
+    categories.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category;
+        option.textContent = category;
+        categoryDropdown.appendChild(option);
+        
+        const filterOption = document.createElement('option');
+        filterOption.value = category;
+        filterOption.textContent = category;
+        categoryFilter.appendChild(filterOption);
+    });
+}
+
 // Initial load
+populateCategoryDropdowns();
 loadFoods();
