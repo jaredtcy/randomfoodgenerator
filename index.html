@@ -3,15 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JR Food store List App</title>
+    <title>JR Food Store List App</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- Firebase SDKs -->
-    <script type="module" src="app.js"></script>
+    <script type="module" src="app.js" defer></script>
 </head>
 <body>
     <h1>JR Food List App</h1>
+    
     <input type="text" id="foodInput" placeholder="Enter name of store">
+    <input type="text" id="categoryInput" placeholder="Enter category (e.g., Dessert)">
     <button id="addFoodButton">Add to list</button>
+    
+    <label for="categoryFilter">Filter by category:</label>
+    <select id="categoryFilter">
+        <option value="">All</option>
+        <option value="Dessert">Dessert</option>
+        <option value="Japanese Mains">Japanese Mains</option>
+        <option value="Asian Mains">Asian Mains</option>
+        <!-- Add more categories as needed -->
+    </select>
     <button id="generateRandomFoodButton">What shall we eat today?</button>
     
     <h2>List of stores</h2>
